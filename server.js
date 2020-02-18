@@ -81,6 +81,6 @@ app.get('/', (req, res) => {
     })
 })
 
-app.listen(port, function(){
-    console.log("Server is vibing on port 3000");
+app.listen(process.env.PORT || port, function(){
+    console.log("Server is vibing");
 })
