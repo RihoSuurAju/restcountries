@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const request = require("request");
 
 const app = express();
+app.set("view engine", "ejs")
+app.use(express.static("public"));
 
 function getCountry(d) {
     let country = d.name;
@@ -22,12 +24,12 @@ function getSubRegion(d){
 }
 
 function getCallingCode(d){
-    let cCode = d.callingcodes;
+    let cCode = d.callingCodes[0];
     return cCode;
 }
 
 function getLanguage(d){
-    let lang = d.languages.name;
+    let lang = d.languages[0].name;
     return lang;
 }
 
@@ -46,6 +48,11 @@ function getAlpha3Code(d){
     return a3code;
 }
 
+function getFlag(d){
+    let flag = d.flag;
+    return flag;
+}
+
 function getCurrency(d){
     let currency = d.currencies[0].symbol;
     return currency;
@@ -57,9 +64,7 @@ app.get('/', (req, res) => {
 
     request(url, function(error, response, body){
         let data = JSON.parse(response.body);
-        console.log(data);
-
-        //var stringOfTruth = "Name: " + getCountry(data) + "\n Region: " + getRegion(data) + ", " + getSubRegion(data) + "\n Calling Code: " + getCallingCode(data) + "\n Language: " + getLanguage(data) + "\n Population: " + getPopulation(data) + "\n Top Level Domain: " + getTopDomain(data) + "\n Alpha3 Code: " + getAlpha3Code(data) + "\n Currency: " + getCurrency(data);
+        data = data[0];
 
         res.render('index', {
             country: getCountry(data),
@@ -70,11 +75,9 @@ app.get('/', (req, res) => {
             population: getPopulation(data),
             topLevelDomain: getTopDomain(data),
             alpha3Code: getAlpha3Code(data),
-            currency: getCurrency(data)
+            currency: getCurrency(data),
+            flag: getFlag(data)
         })
-
-        res.write(stringOfTruth);
-        res.send();
     })
 })
 
